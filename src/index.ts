@@ -25,7 +25,7 @@ export class PlateCode {
     return base32.decode(encoded)
   }
 
-  public hash = (value: string, options?: { hasEmoji: true }): string => {
+  public hash = (value: string, options?: { hasEmoji: boolean }): string => {
     return this.generateHashLicensePlate(value, options?.hasEmoji ?? true)
   }
 
