@@ -1,18 +1,18 @@
 {
-  "name": "crypto-plate",
+  "name": "platecode",
   "type": "module",
   "version": "0.0.2",
   "packageManager": "pnpm@9.1.1",
-  "description": "PRNG readable crypto in the style of license plates",
+  "description": "PRNG readable base32 in the style of license plates",
   "author": "leizhenpeng <laolei@forkway.cn>",
   "license": "MIT",
   "funding": "https://github.com/sponsors/leizhenpeng",
-  "homepage": "https://github.com/leizhenpeng/crypto-plate#readme",
+  "homepage": "https://github.com/leizhenpeng/platecode#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/leizhenpeng/crypto-plate.git"
+    "url": "git+https://github.com/leizhenpeng/platecode.git"
   },
-  "bugs": "https://github.com/leizhenpeng/crypto-plate/issues",
+  "bugs": "https://github.com/leizhenpeng/platecode/issues",
   "keywords": [],
   "sideEffects": false,
   "exports": {
@@ -48,7 +48,7 @@
     "prepare": "simple-git-hooks"
   },
   "dependencies": {
-    "crypto-js": "^4.2.0"
+    "hi-base32": "^0.5.1"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^2.18.1",
