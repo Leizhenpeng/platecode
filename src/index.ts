@@ -3,21 +3,14 @@ import { getSeedFromString, splitMix32 } from './prng'
 import { emojiDictionary } from './emoji'
 
 export class PlateCode {
-  private province: string
-  private alphabet: string
-  private alphanumeric: string
-  emojis: string[]
+  private readonly province = '黑吉辽京津晋冀鲁豫蒙沪渝苏浙皖闽湘赣鄂桂琼川贵云藏陕甘宁青新粤'
+  private readonly alphabet = 'ABCDEFGHJKLMNPQRSTUVWXYZ' // Excludes "I" and "O"
+  private readonly alphanumeric = 'ABCDEFGHJKLMNPQRSTUVWXYZ0123456789' // Excludes "I" and "O"
+  private readonly emojis = emojiDictionary
 
-  constructor() {
-    this.province = '黑吉辽京津晋冀鲁豫蒙沪渝苏浙皖闽湘赣鄂桂琼川贵云藏陕甘宁青新粤'
-    this.alphabet = 'ABCDEFGHJKLMNPQRSTUVWXYZ' // 去掉了 "I" 和 "O"
-    this.alphanumeric = 'ABCDEFGHJKLMNPQRSTUVWXYZ0123456789' // 去掉了 "I" 和 "O"
-    this.emojis = emojiDictionary
-  }
-
-  public encode = (input: string): string => {
-    const encoded = base32.encode(input).replace(/=/g, '') // Base32 编码，删除填充
-    return this.generateFullLicensePlates(encoded, input)
+  public encode = (input: string, options?: { emoji?: boolean }): string => {
+    const encoded = base32.encode(input).replace(/=/g, '') // Base32 encode and remove padding
+    return this.generateFullLicensePlates(encoded, input, options?.emoji ?? true)
   }
 
   public decode = (licensePlates: string): string => {
@@ -25,11 +18,11 @@ export class PlateCode {
     return base32.decode(encoded)
   }
 
-  public hash = (value: string, options?: { hasEmoji: boolean }): string => {
-    return this.generateHashLicensePlate(value, options?.hasEmoji ?? true)
+  public hash = (value: string, options?: { emoji?: boolean }): string => {
+    return this.generateHashLicensePlate(value, options?.emoji ?? true)
   }
 
-  private generateFullLicensePlates(encoded: string, originalInput: string): string {
+  private generateFullLicensePlates(encoded: string, originalInput: string, includeEmoji: boolean): string {
     const seed = getSeedFromString(originalInput)
     const random = splitMix32(seed)
 
@@ -42,12 +35,10 @@ export class PlateCode {
       return `${this.province[provinceIndex]}${this.alphabet[letterIndex]}·${chunk}`
     })
 
-    const emojis = [] as string[]
-    while (emojis.length < plates.length + 2) {
-      const emoji = this.emojis[Math.floor(random() * this.emojis.length)]
-      if (!emojis.includes(emoji))
-        emojis.push(emoji)
-    }
+    if (!includeEmoji)
+      return plates.join(' ')
+
+    const emojis = this.generateUniqueEmojis(random, plates.length + 2)
 
     const startEmoji = emojis.shift()!
     const separatorEmojis = emojis
@@ -64,41 +55,40 @@ export class PlateCode {
     const seed = getSeedFromString(value)
     const random = splitMix32(seed)
 
-    const rand_p = Math.floor(random() * this.province.length)
-    const rand_alphabet = Math.floor(random() * this.alphabet.length)
-    const randArr = []
-    for (let i = 0; i < 5; i++)
-      randArr.push(Math.floor(random() * this.alphanumeric.length))
+    const provinceIndex = Math.floor(random() * this.province.length)
+    const letterIndex = Math.floor(random() * this.alphabet.length)
+    const randomAlphanumerics = this.generateRandomAlphanumeric(random, 5)
 
-    const result_no_emoji = [
-            `${this.province[rand_p]}${this.alphabet[rand_alphabet]}`,
-            `${this.alphanumeric[randArr[0]]}${this.alphanumeric[randArr[1]]}${this.alphanumeric[randArr[2]]}${this.alphanumeric[randArr[3]]}${this.alphanumeric[randArr[4]]}`,
-    ].join('·')
+    const basePlate = `${this.province[provinceIndex]}${this.alphabet[letterIndex]}·${randomAlphanumerics}`
 
     if (!hasEmoji)
-      return result_no_emoji
+      return basePlate
 
-    const result_emoji = [
-      this.emojis[Math.floor(random() * this.emojis.length)],
-      result_no_emoji,
-      this.emojis[Math.floor(random() * this.emojis.length)],
-    ].join(' ')
+    const startEmoji = this.emojis[Math.floor(random() * this.emojis.length)]
+    const endEmoji = this.emojis[Math.floor(random() * this.emojis.length)]
 
-    return result_emoji
+    return `${startEmoji} ${basePlate} ${endEmoji}`
   }
 
   private extractEncodedText(licensePlates: string): string {
     return licensePlates.split(' ').map((plate) => {
       const parts = plate.split('·')
-      if (parts.length > 1)
-        return parts[1].replace(/A+$/, '')
-      return '' // 或者可以根据你的需求返回一个默认值或抛出错误
+      return parts.length > 1 ? parts[1].replace(/A+$/, '') : ''
     }).join('')
+  }
+
+  private generateRandomAlphanumeric(random: () => number, length: number): string {
+    return Array.from({ length }, () => this.alphanumeric[Math.floor(random() * this.alphanumeric.length)]).join('')
+  }
+
+  private generateUniqueEmojis(random: () => number, count: number): string[] {
+    const uniqueEmojis = new Set<string>()
+    while (uniqueEmojis.size < count) {
+      const emoji = this.emojis[Math.floor(random() * this.emojis.length)]
+      uniqueEmojis.add(emoji)
+    }
+    return Array.from(uniqueEmojis)
   }
 }
 
-export const {
-  decode,
-  encode,
-  hash,
-} = new PlateCode()
+export const { decode, encode, hash } = new PlateCode()
