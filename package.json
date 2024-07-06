@@ -3,7 +3,7 @@
   "type": "module",
   "version": "0.0.2",
   "packageManager": "pnpm@9.1.1",
-  "description": "PRNG readable base32 in the style of license plates",
+  "description": "Generate readable hashes or encodings in the style of license plates",
   "author": "leizhenpeng <laolei@forkway.cn>",
   "license": "MIT",
   "funding": "https://github.com/sponsors/leizhenpeng",

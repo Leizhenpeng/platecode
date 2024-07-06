@@ -6,7 +6,7 @@
 [![JSDocs][jsdocs-src]][jsdocs-href]
 [![License][license-src]][license-href]
 
-generate readable hash or base32 in the style of license plates
+Generate readable hashes or encodings in the style of license plates
 
 `platecode` 是一个 JavaScript 库，用于生成类似车牌的可读哈希或 Base32 编码,使其更加有趣和直观。
 
@@ -28,7 +28,7 @@ const encoded = encode('hello world', { emoji: false })
 console.log(encoded) // '渝F·WGVA2'
 ```
 
-### Base32
+### Encoding and Decoding
 ```js
 import { decode, encode } from 'platecode'
 
