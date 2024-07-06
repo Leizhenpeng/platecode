@@ -1,7 +1,7 @@
 {
   "name": "platecode",
   "type": "module",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "packageManager": "pnpm@9.1.1",
   "description": "Generate readable hashes or encodings in the style of license plates",
   "author": "leizhenpeng <laolei@forkway.cn>",
