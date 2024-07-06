@@ -42,7 +42,7 @@ console.log(decoded) // 'hello world'
 
 Thanks to my friend [cunzaizhuyi](https://github.com/cunzaizhuyi) for the new repository [hashplate-cn](https://github.com/cunzaizhuyi/hashplate-cn), which I find quite interesting.
 
-Since hash has its limitations, I'm considering giving crypto a try
+Since hash has its limitations, I'm considering giving encoding a try
 
 ## License
 
